@@ -51,6 +51,7 @@ public class CustomerRepository implements CustomerInterface {
                         result.getInt("customer_id"),
                         result.getString("first_name"),
                         result.getString("last_name"),
+                        result.getString("country"),
                         result.getString("postal_code"),
                         result.getString("phone"),
                         result.getString("email")
@@ -85,6 +86,7 @@ public class CustomerRepository implements CustomerInterface {
                     result.getInt("customer_id"),
                     result.getString("first_name"),
                     result.getString("last_name"),
+                        result.getString("country"),
                     result.getString("postal_code"),
                     result.getString("phone"),
                     result.getString("email")
@@ -118,6 +120,7 @@ public class CustomerRepository implements CustomerInterface {
                         result.getInt("customer_id"),
                         result.getString("first_name"),
                         result.getString("last_name"),
+                        result.getString("country"),
                         result.getString("postal_code"),
                         result.getString("phone"),
                         result.getString("email")
@@ -149,6 +152,7 @@ public class CustomerRepository implements CustomerInterface {
                         result.getInt("customer_id"),
                         result.getString("first_name"),
                         result.getString("last_name"),
+                        result.getString("country"),
                         result.getString("postal_code"),
                         result.getString("phone"),
                         result.getString("email")
@@ -163,8 +167,25 @@ public class CustomerRepository implements CustomerInterface {
         return customers;
     }
 
-    public int insert(Customer object){
-        return 0;
+    public int insert(Customer customer){
+        String sql = "INSERT INTO customer VALUES (?,?,?,NULL,NULL,NULL,NULL,?,?,?,NULL,?)";
+        int result = 0;
+        try(Connection conn = DriverManager.getConnection(url, username,password)) {
+            // Write statement
+            PreparedStatement statement = conn.prepareStatement(sql);
+            statement.setInt(1, customer.id());
+            statement.setString(2,customer.firstName());
+            statement.setString(3, customer.lastName());
+            statement.setString(4, customer.country());
+            statement.setString(5, customer.postalCode());
+            statement.setString(6, customer.phoneNumber());
+            statement.setString(7, customer.email());
+            // Execute statement
+            result = statement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return result;
     }
 
     public int update(Customer object){

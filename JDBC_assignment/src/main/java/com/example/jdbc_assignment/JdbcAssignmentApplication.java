@@ -24,8 +24,12 @@ public class JdbcAssignmentApplication implements ApplicationRunner{
 
         //Customer res = custRepo.findById(5);
 
-        List<Customer> res = custRepo.findPage(1,1);
+        //List<Customer> res = custRepo.findPage(1,1);
 
-        System.out.println(res);
+        Customer customer = new Customer(60, "Nadja", "Olsen", "Denmark", "1233","88888888","katte@ersøde.dk");
+
+        custRepo.insert(customer);
+
+      //  System.out.println(res);
     }
 }
