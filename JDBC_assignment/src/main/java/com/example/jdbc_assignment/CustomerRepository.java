@@ -188,8 +188,44 @@ public class CustomerRepository implements CustomerInterface {
         return result;
     }
 
-    public int update(Customer object){
-        return 0;
+    public int update(Customer customer){
+        String sql = "UPDATE customer SET first_name = ? WHERE customer_id = ?";
+        int result = 0;
+        try(Connection conn = DriverManager.getConnection(url, username,password)) {
+            // Write statement
+            PreparedStatement statement = conn.prepareStatement(sql);
+            statement.setString(1, customer.firstName());
+            statement.setInt(2, customer.id());
+            // Execute statement
+            result = statement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+
+    public String findCountryWithMostCustomers(){
+        String sql = "SELECT Country, COUNT (*) AS Number FROM customer GROUP BY Country ORDER BY Country";
+
+        ResultSet result;
+
+        String countryCount = "";
+
+        try(Connection conn = DriverManager.getConnection(url, username,password)) {
+            // Write statement
+            PreparedStatement statement = conn.prepareStatement(sql);
+            // Execute statement
+            result = statement.executeQuery();
+
+            if(result.next()) {
+                countryCount = result.getString("country");
+            }
+
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return countryCount;
 
     }
 

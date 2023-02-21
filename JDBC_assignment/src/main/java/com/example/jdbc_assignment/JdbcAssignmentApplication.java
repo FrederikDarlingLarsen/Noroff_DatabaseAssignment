@@ -26,9 +26,11 @@ public class JdbcAssignmentApplication implements ApplicationRunner{
 
         //List<Customer> res = custRepo.findPage(1,1);
 
-        Customer customer = new Customer(60, "Nadja", "Olsen", "Denmark", "1233","88888888","katte@ersøde.dk");
+        Customer customer = new Customer(60, "Bo", "Olsen", "Denmark", "1233","88888888","katte@ersøde.dk");
 
-        custRepo.insert(customer);
+        custRepo.update(customer);
+
+        custRepo.findCountryWithMostCustomers();
 
       //  System.out.println(res);
     }
