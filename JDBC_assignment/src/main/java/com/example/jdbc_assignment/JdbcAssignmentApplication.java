@@ -30,8 +30,9 @@ public class JdbcAssignmentApplication implements ApplicationRunner{
 
         custRepo.update(customer);
 
-        custRepo.findCountryWithMostCustomers();
-
-      //  System.out.println(res);
+       for(int i = 0; i < 60; i++) {
+           String res = custRepo.findMostFrequentGenreForAGivenCustomerById(i);
+           System.out.println(res);
+       }
     }
 }

@@ -205,12 +205,8 @@ public class CustomerRepository implements CustomerInterface {
     }
 
     public String findCountryWithMostCustomers(){
-        String sql = "SELECT Country, COUNT (*) AS Number FROM customer GROUP BY Country ORDER BY Country";
-
+        String sql = "SELECT Country, COUNT (*) AS Number FROM customer GROUP BY Country ORDER BY Number DESC";
         ResultSet result;
-
-        String countryCount = "";
-
         try(Connection conn = DriverManager.getConnection(url, username,password)) {
             // Write statement
             PreparedStatement statement = conn.prepareStatement(sql);
@@ -218,29 +214,90 @@ public class CustomerRepository implements CustomerInterface {
             result = statement.executeQuery();
 
             if(result.next()) {
-                countryCount = result.getString("country");
+                return result.getString("country");
             }
-
-
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return countryCount;
+        return null;
+    }
+
+
+    public String findHighestSpender(){
+        String sql = "SELECT customer_id, SUM(total) AS total_score FROM invoice GROUP BY customer_id ORDER BY SUM(total) DESC";
+
+        ResultSet result;
+
+        int cust_id = 0;
+        String name = "";
+        double total = 0;
+        try(Connection conn = DriverManager.getConnection(url, username,password)) {
+            // Write statement
+            PreparedStatement statement = conn.prepareStatement(sql);
+
+
+            // Execute statement
+            result = statement.executeQuery();
+
+            if(result.next()) {
+                cust_id = result.getInt("customer_id");
+                total = result.getDouble("total_score");
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+
+        }
+
+        Customer customer = findById(cust_id);
+
+        return "Name: " + customer.firstName() + ", Total: " + total;
+    }
+
+
+
+    public String findMostFrequentGenreForAGivenCustomerById(int id){
+        String sql = "SELECT g.name AS genre_name, COUNT(*) AS genre_count FROM invoice i JOIN invoice_line il ON i.invoice_id = il.invoice_id JOIN track t ON il.track_id = t.track_id JOIN genre g ON t.genre_id = g.genre_id WHERE i.customer_id = ? GROUP BY g.name ORDER BY genre_count DESC LIMIT 1";
+
+        ResultSet result;
+
+        int cust_id = 0;
+
+        String genre = "";
+
+        try(Connection conn = DriverManager.getConnection(url, username,password)) {
+            // Write statement
+            PreparedStatement statement = conn.prepareStatement(sql);
+
+            statement.setInt(1, id);
+
+            // Execute statement
+            result = statement.executeQuery();
+
+            if(result.next()) {
+               // cust_id = result.getInt("i.customer_id");
+                genre = result.getString("genre_name");
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+
+        }
+
+        //Customer customer = findById(cust_id);
+
+        return genre;
+
 
     }
+
+
 
     public int delete(Customer object){
         return 0;
 
     }
-
     public int deleteById(Integer id){
         return 0;
     }
-
-
-
-
-
-
 }
