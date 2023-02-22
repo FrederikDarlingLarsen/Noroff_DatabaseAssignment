@@ -1,6 +1,6 @@
 package com.example.jdbc_assignment;
 
-import java.util.List;
+import com.example.jdbc_assignment.Models.Customer;
 
 public interface CustomerInterface extends CRUDRepository<Customer, Integer> {
 

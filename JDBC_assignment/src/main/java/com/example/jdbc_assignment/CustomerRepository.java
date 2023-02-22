@@ -1,7 +1,9 @@
 package com.example.jdbc_assignment;
 
+import com.example.jdbc_assignment.Models.Customer;
+import com.example.jdbc_assignment.Models.CustomerCountry;
+import com.example.jdbc_assignment.Models.CustomerSpender;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 import java.sql.*;
@@ -34,7 +36,16 @@ public class CustomerRepository implements CustomerInterface {
     }
 
 
+    /**
 
+     Retrieves a list of all customers from the database.
+
+     @return a list of all customers in the database
+
+     @throws SQLException if an error occurs while executing the SQL query
+
+     (=^-ω-^=)
+     */
     public List<Customer> findAll() {
         String sql = "SELECT * FROM customer";
 
@@ -204,44 +215,51 @@ public class CustomerRepository implements CustomerInterface {
         return result;
     }
 
-    public String findCountryWithMostCustomers(){
+    public CustomerCountry findCountryWithMostCustomers(){
         String sql = "SELECT Country, COUNT (*) AS Number FROM customer GROUP BY Country ORDER BY Number DESC";
         ResultSet result;
+
+        List<CustomerCountry> customerCountryList = new ArrayList<CustomerCountry>();
         try(Connection conn = DriverManager.getConnection(url, username,password)) {
             // Write statement
             PreparedStatement statement = conn.prepareStatement(sql);
             // Execute statement
             result = statement.executeQuery();
 
-            if(result.next()) {
-                return result.getString("country");
+            if(result.next()){
+                CustomerCountry customer = new CustomerCountry(
+                        result.getString("country")
+                );
+                customerCountryList.add(customer);
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return null;
+        return customerCountryList.get(0);
     }
 
 
-    public String findHighestSpender(){
+    public CustomerSpender findHighestSpender(){
         String sql = "SELECT customer_id, SUM(total) AS total_score FROM invoice GROUP BY customer_id ORDER BY SUM(total) DESC";
 
         ResultSet result;
 
-        int cust_id = 0;
-        String name = "";
-        double total = 0;
+        List<CustomerSpender> customerSpenderList = new ArrayList<CustomerSpender>();
         try(Connection conn = DriverManager.getConnection(url, username,password)) {
             // Write statement
             PreparedStatement statement = conn.prepareStatement(sql);
 
-
             // Execute statement
             result = statement.executeQuery();
 
-            if(result.next()) {
-                cust_id = result.getInt("customer_id");
-                total = result.getDouble("total_score");
+            if(result.next()){
+                CustomerSpender customer = new CustomerSpender(
+                        result.getInt("customer_id"),
+                        result.getString("first_name"),
+                        result.getString("last_name"),
+                        result.getString("total")
+                );
+                customerSpenderList.add(customer);
             }
 
         } catch (SQLException e) {

@@ -1,4 +1,4 @@
-package com.example.jdbc_assignment;
+package com.example.jdbc_assignment.Models;
 
 public record Customer(int id,
                        String firstName,
