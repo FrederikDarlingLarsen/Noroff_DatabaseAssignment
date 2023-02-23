@@ -36,14 +36,10 @@ public class CustomerRepository implements CustomerInterface {
         }
     }
 
-
     /**
      * Retrieves a list of all customers from the database.
-     *
      * @return a list of all customers in the database
-     * @throws SQLException if an error occurs while executing the SQL query
-     *                      <p>
-     *                      (=^-ω-^=)
+     * @throws SQLException if an error occurs while executing the SQL query (=^-ω-^=)
      */
     public List<Customer> findAll() {
         String sql = "SELECT * FROM customer";
@@ -78,9 +74,8 @@ public class CustomerRepository implements CustomerInterface {
 
     /**
      * Retrieves a customer by ID
-     *
      * @param id takes the id of a customer as an input
-     * @return returns a customer with the given ID
+     * @return returns a customer with the given ID (=^-ω-^=)
      */
     public Customer findById(Integer id) {
         String sql = "SELECT * FROM customer WHERE customer_id = ?";
@@ -118,9 +113,8 @@ public class CustomerRepository implements CustomerInterface {
 
     /**
      * Retrieves a customer by name
-     *
      * @param firstName takes the firstname of a customer as an input
-     * @return returns a customer with the given name or partial matches
+     * @return returns a customer with the given name or partial matches (=^-ω-^=)
      */
     public Customer findByName(String firstName) {
         String sql = "SELECT * FROM customer WHERE first_name LIKE  '%" + firstName + "%'";
@@ -156,10 +150,8 @@ public class CustomerRepository implements CustomerInterface {
         return customers.get(0);
     }
 
-
     /**
      * Retrieves a page with selected offset and limit
-     *
      * @param limit  limit the amount of customers for the page
      * @param offset sets the offset for the page
      * @return returns the page with the selected offset and limit (=^-ω-^=)
@@ -202,18 +194,17 @@ public class CustomerRepository implements CustomerInterface {
      * or 0 for SQL statements that return nothing (=^-ω-^=)
      */
     public int insert(Customer customer){
-        String sql = "INSERT INTO customer VALUES (?,?,?,NULL,NULL,NULL,NULL,?,?,?,NULL,?)";
+        String sql = "INSERT INTO customer VALUES (default,?,?,NULL,NULL,NULL,NULL,?,?,?,NULL,?)";
         int result = 0;
         try(Connection conn = DriverManager.getConnection(url, username,password)) {
             // Write statement
             PreparedStatement statement = conn.prepareStatement(sql);
-            statement.setInt(1, customer.id());
-            statement.setString(2,customer.firstName());
-            statement.setString(3, customer.lastName());
-            statement.setString(4, customer.country());
-            statement.setString(5, customer.postalCode());
-            statement.setString(6, customer.phoneNumber());
-            statement.setString(7, customer.email());
+            statement.setString(1,customer.firstName());
+            statement.setString(2, customer.lastName());
+            statement.setString(3, customer.country());
+            statement.setString(4, customer.postalCode());
+            statement.setString(5, customer.phoneNumber());
+            statement.setString(6, customer.email());
             // Execute statement
             result = statement.executeUpdate();
         } catch (SQLException e) {
@@ -224,8 +215,9 @@ public class CustomerRepository implements CustomerInterface {
 
     /**
      * Updates a customer
-     * @param customer sets the
-     * @return
+     * @param customer sets the attributes for the customer
+     * @return either the row count for SQL Data Manipulation Language statements
+     * or 0 for SQL statements that return nothing (=^-ω-^=)
      */
     public int update(Customer customer){
         String sql = "UPDATE customer SET first_name = ?, last_name = ?, country = ?, postal_code = ?, phone = ?, email = ? WHERE customer_id = ?";
@@ -275,48 +267,48 @@ public class CustomerRepository implements CustomerInterface {
         return customerCountryList.get(0);
     }
 
+    /**
+     * Retrieves the customer who wasted most of their money
+     * @return the customer and the amount of wasted money (=^-ω-^=)
+     */
+    public CustomerSpender findHighestSpender(){
+        String sql = "SELECT customer_id, SUM(total) AS total_score FROM invoice GROUP BY customer_id ORDER BY SUM(total) DESC";
 
-//    public CustomerSpender findHighestSpender(){
-//        String sql = "SELECT customer_id, SUM(total) AS total_score FROM invoice GROUP BY customer_id ORDER BY SUM(total) DESC";
-//
-//        ResultSet result;
-//
-//        List<CustomerSpender> customerSpenderList = new ArrayList<CustomerSpender>();
-//        try(Connection conn = DriverManager.getConnection(url, username,password)) {
-//            // Write statement
-//            PreparedStatement statement = conn.prepareStatement(sql);
-//
-//            // Execute statement
-//            result = statement.executeQuery();
-//
-//            if(result.next()){
-//                CustomerSpender customer = new CustomerSpender(
-//                        result.getInt("customer_id"),
-//                        result.getString("first_name"),
-//                        result.getString("last_name"),
-//                        result.getString("total")
-//                );
-//                customerSpenderList.add(customer);
-//            }
-//
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//
-//        }
-//
-//        Customer customer = findById(cust_id);
-//
-//        return "Name: " + customer.firstName() + ", Total: " + total;
-//    }
+        ResultSet result;
+
+        List<CustomerSpender> customerSpenderList = new ArrayList<CustomerSpender>();
+        try(Connection conn = DriverManager.getConnection(url, username,password)) {
+            // Write statement
+            PreparedStatement statement = conn.prepareStatement(sql);
+
+            // Execute statement
+            result = statement.executeQuery();
+
+            if(result.next()){
+                CustomerSpender customer = new CustomerSpender(
+                        result.getInt("customer_id"),
+                        findById(result.getInt("customer_id")).firstName(),
+                        result.getString("total_score")
+                );
+                customerSpenderList.add(customer);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+
+        }
+        return customerSpenderList.get(0);
+    }
 
 
     /**
-     * Retrieves the most frequent genre for a given customer
-     * @param id
-     * @return
+     * Retrieves the most frequent genre for a given customer if it's a tie shows both
+     * @param id takes the ID of a customer
+     * @return most popular genre(s) (=^-ω-^=)
      */
     public CustomerGenre findMostFrequentGenreForAGivenCustomerById(int id){
-        String sql = "SELECT g.name AS genre_name, COUNT(*) AS genre_count FROM invoice i JOIN invoice_line il ON i.invoice_id = il.invoice_id JOIN track t ON il.track_id = t.track_id JOIN genre g ON t.genre_id = g.genre_id WHERE i.customer_id = ? GROUP BY g.name ORDER BY genre_count DESC LIMIT 1";
+        String sql = "SELECT g.name AS genre_name, COUNT(*) AS genre_count FROM invoice i JOIN invoice_line il ON i.invoice_id = il.invoice_id JOIN track t " +
+                "ON il.track_id = t.track_id JOIN genre g ON t.genre_id = g.genre_id WHERE i.customer_id = ? GROUP BY g.name ORDER BY genre_count DESC LIMIT 2";
 
         ResultSet result;
 
@@ -331,10 +323,23 @@ public class CustomerRepository implements CustomerInterface {
             // Execute statement
             result = statement.executeQuery();
 
-            if(result.next()) {
-                CustomerGenre customerGenre = new CustomerGenre(id,findById(id).firstName(),result.getString("genre_name"),);
-                customerGenreList.add(customerGenre);
+            result.next();
+            String mostPopularGenre = result.getString("genre_name");
+            int mostPopularCount = result.getInt("genre_count");
+
+            result.next();
+            String secondMostPopularGenre = result.getString("genre_name");
+            int secondMostPopularCount = result.getInt("genre_count");
+
+            String genreResult;
+            if (mostPopularCount == secondMostPopularCount ){
+                genreResult = mostPopularGenre +" and "+ secondMostPopularGenre;
             }
+            else {
+                genreResult = mostPopularGenre;
+            }
+                CustomerGenre customerGenre = new CustomerGenre(id,findById(id).firstName(),genreResult);
+                customerGenreList.add(customerGenre);
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -342,7 +347,6 @@ public class CustomerRepository implements CustomerInterface {
         }
         return customerGenreList.get(0);
     }
-
 
     public int delete(Customer object){
         return 0;

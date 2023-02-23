@@ -1,6 +1,4 @@
 package com.example.jdbc_assignment.Models;
 
-public record CustomerCountry(
-                       String country
-) {
+public record CustomerCountry(String country) {
 }
