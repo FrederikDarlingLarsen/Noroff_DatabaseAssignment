@@ -347,12 +347,4 @@ public class CustomerRepository implements CustomerInterface {
         }
         return customerGenreList.get(0);
     }
-
-    public int delete(Customer object){
-        return 0;
-
-    }
-    public int deleteById(Integer id){
-        return 0;
-    }
 }
