@@ -18,6 +18,6 @@ The application do following
 5. Add a new customer to the database, including only the fields listed above.
 6. Update an existing customer in the database.
 7. Retrieve the country with the most customers.
-8.Retrieve the customer who has the highest total spending in the invoice table.
-9.For a given customer, determine their most popular genre based on the genre that corresponds to the most tracks from invoices associated with that customer. In the case of a tie, display both genres.
+8. Retrieve the customer who has the highest total spending in the invoice table.
+9. For a given customer, determine their most popular genre based on the genre that corresponds to the most tracks from invoices associated with that customer. In the case of a tie, display both genres.
 
