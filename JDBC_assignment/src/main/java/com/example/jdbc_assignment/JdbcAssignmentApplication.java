@@ -1,6 +1,7 @@
 package com.example.jdbc_assignment;
 import com.example.jdbc_assignment.Models.Customer;
 import com.example.jdbc_assignment.Models.CustomerCountry;
+import com.example.jdbc_assignment.Models.CustomerGenre;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.SpringApplication;
@@ -26,17 +27,17 @@ public class JdbcAssignmentApplication implements ApplicationRunner{
 
         //List<Customer> res = custRepo.findPage(1,1);
 
-       // Customer customer = new Customer(60, "Bo", "Olsen", "Denmark", "1233","88888888","katte@ersøde.dk");
-
-        CustomerCountry customer = custRepo.findCountryWithMostCustomers();
+        Customer customer = new Customer(59, "Rimidaldalv Hcovorimdilv", "Nitup", "Russia", "666","66666666","Nitup@KGB.ru");
+        custRepo.update(customer);
+//        CustomerCountry customer = custRepo.findCountryWithMostCustomers();
 
         System.out.println(customer);
 
        // custRepo.update(customer);
 
-      /* for(int i = 0; i < 60; i++) {
-           String res = custRepo.findMostFrequentGenreForAGivenCustomerById(i);
+      for(int i = 1; i < 59; i++) {
+           CustomerGenre res = custRepo.findMostFrequentGenreForAGivenCustomerById(i);
            System.out.println(res);
-       }*/
+       }
     }
 }
